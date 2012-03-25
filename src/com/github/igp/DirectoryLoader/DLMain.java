@@ -16,7 +16,6 @@ public class DLMain extends JavaPlugin {
 		log = this.getLogger();
 		final DLPluginLoader pluginLoader = new DLPluginLoader(getServer());
 
-		log.info("Loading plugins...");
 		for (final String directory : getConfig().getStringList("directories")) {
 			final File f = new File(directory);
 			Plugin plugin = null;
