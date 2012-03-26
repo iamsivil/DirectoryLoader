@@ -37,16 +37,15 @@ public class DLPluginLoader extends JavaPluginLoader {
 	}
 
 	@Override
-	@SuppressWarnings("unused")
 	public PluginDescriptionFile getPluginDescription(final File file) throws InvalidDescriptionException {
 		InputStream stream = null;
 		try {
-			final File config = new File(file.getAbsolutePath() + File.separator + "plugin.yml");
+			final File desc = new File(file.getAbsolutePath() + File.separator + "plugin.yml");
 
-			if (config == null)
+			if ((desc == null) || (!desc.exists()))
 				throw new InvalidDescriptionException(new FileNotFoundException("Folder does not contain plugin.yml"));
 
-			stream = new FileInputStream(config);
+			stream = new FileInputStream(desc);
 
 			return new PluginDescriptionFile(stream);
 		}
