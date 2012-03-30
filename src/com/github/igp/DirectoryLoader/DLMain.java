@@ -18,6 +18,13 @@ public class DLMain extends JavaPlugin
 		log = this.getLogger();
 		final DLPluginLoader pluginLoader = new DLPluginLoader(getServer());
 
+		final File configFile = new File(getDataFolder().getAbsolutePath() + File.separator + "config.yml");
+		if ((configFile == null) || !configFile.exists())
+		{
+			log.info("Configuration file not found: saving default");
+			saveDefaultConfig();
+		}
+
 		for (final String directory : getConfig().getStringList("directories"))
 		{
 			final File f = new File(directory);
