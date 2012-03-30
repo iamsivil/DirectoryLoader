@@ -1,8 +1,11 @@
 package com.github.igp.DirectoryLoader;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.logging.Logger;
 
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.plugin.InvalidPluginException;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.UnknownDependencyException;
@@ -16,7 +19,6 @@ public class DLMain extends JavaPlugin
 	public void onEnable()
 	{
 		log = this.getLogger();
-		final DLPluginLoader pluginLoader = new DLPluginLoader(getServer());
 
 		final File configFile = new File(getDataFolder().getAbsolutePath() + File.separator + "config.yml");
 		if ((configFile == null) || !configFile.exists())
@@ -24,6 +26,8 @@ public class DLMain extends JavaPlugin
 			log.info("Configuration file not found: saving default");
 			saveDefaultConfig();
 		}
+
+		final DLPluginLoader pluginLoader = new DLPluginLoader(getServer());
 
 		for (final String directory : getConfig().getStringList("directories"))
 		{
@@ -49,7 +53,26 @@ public class DLMain extends JavaPlugin
 				else
 				{
 					log.info("Loading " + plugin.getDescription().getFullName());
-					getServer().getPluginManager().enablePlugin(plugin);
+					
+					try
+					{
+						File pluginConfig = new File(f.getAbsolutePath() + File.separator + "config.yml");
+						if ((pluginConfig != null) && pluginConfig.exists())
+						{
+							plugin.getConfig().load(f.getAbsolutePath() + File.separator + "config.yml");
+						}	
+					}
+					catch (final FileNotFoundException e)
+					{
+					}
+					catch (final IOException e)
+					{
+					}
+					catch (final InvalidConfigurationException e)
+					{
+					}
+					
+					pluginLoader.enablePlugin(plugin);
 				}
 			}
 		}
