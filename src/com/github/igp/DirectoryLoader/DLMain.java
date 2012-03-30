@@ -19,16 +19,8 @@ public class DLMain extends JavaPlugin
 	public void onEnable()
 	{
 		log = this.getLogger();
-
-		final File configFile = new File(getDataFolder().getAbsolutePath() + File.separator + "config.yml");
-		if ((configFile == null) || !configFile.exists())
-		{
-			log.info("Configuration file not found: saving default");
-			saveDefaultConfig();
-		}
-
 		final DLPluginLoader pluginLoader = new DLPluginLoader(getServer());
-
+		
 		for (final String directory : getConfig().getStringList("directories"))
 		{
 			final File f = new File(directory);
@@ -53,24 +45,6 @@ public class DLMain extends JavaPlugin
 				else
 				{
 					log.info("Loading " + plugin.getDescription().getFullName());
-					
-					try
-					{
-						File pluginConfig = new File(f.getAbsolutePath() + File.separator + "config.yml");
-						if ((pluginConfig != null) && pluginConfig.exists())
-						{
-							plugin.getConfig().load(f.getAbsolutePath() + File.separator + "config.yml");
-						}	
-					}
-					catch (final FileNotFoundException e)
-					{
-					}
-					catch (final IOException e)
-					{
-					}
-					catch (final InvalidConfigurationException e)
-					{
-					}
 					
 					pluginLoader.enablePlugin(plugin);
 				}
