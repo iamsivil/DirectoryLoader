@@ -1,4 +1,5 @@
 name: DirectoryLoader
 version: 0.2
+load: STARTUP
 author: IGP
 main: com.github.igp.DirectoryLoader.DLMain
