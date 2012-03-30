@@ -1,13 +1,12 @@
 package com.github.igp.DirectoryLoader;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.logging.Logger;
 
-import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.InvalidPluginException;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.UnknownDependencyException;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -19,35 +18,50 @@ public class DLMain extends JavaPlugin
 	public void onEnable()
 	{
 		log = this.getLogger();
-		final DLPluginLoader pluginLoader = new DLPluginLoader(getServer());
 		
-		for (final String directory : getConfig().getStringList("directories"))
+		final File configFile = new File(getDataFolder().getAbsolutePath() + File.separator + "config.yml");
+		if ((configFile == null) || !configFile.exists())
+		{
+			log.info("Configuration file not found: saving default");
+			saveResource("dlconfig.yml", false);
+			final File f = new File(getDataFolder().getAbsolutePath() + File.separator + "dlconfig.yml");
+			f.renameTo(configFile);
+		}
+		
+		PluginManager pm = getServer().getPluginManager();
+		pm.registerInterface(DLPluginLoader.class);
+		
+		log.info("Starting to load plugins");
+		for (final String directory : getConfig().getStringList("Directories"))
 		{
 			final File f = new File(directory);
-			Plugin plugin = null;
-
+			
 			try
 			{
-				plugin = pluginLoader.loadPlugin(f);
+				if (f.exists())
+				{
+				if (f.isDirectory())
+					{
+						Plugin plugin = pm.loadPlugin(f);
+						log.info("Loading " + plugin.getDescription().getFullName());
+					}
+					else
+						log.severe("Not a directory: " + f.getAbsolutePath());
+				}
+				else
+					log.severe("Does not exist: " + f.getAbsolutePath());
 			}
-			catch (final InvalidPluginException e)
-			{
-				log.severe("Invalid plugin at: " + f.getAbsolutePath());
-			}
-			catch (final UnknownDependencyException e)
+			catch (UnknownDependencyException e)
 			{
 				log.severe("Unable to load dependency for plugin at: " + f.getAbsolutePath());
 			}
-			finally
+			catch (InvalidPluginException e)
 			{
-				if (plugin == null)
-					log.severe("Error enabling plugin at: " + f.getAbsolutePath());
-				else
-				{
-					log.info("Loading " + plugin.getDescription().getFullName());
-					
-					pluginLoader.enablePlugin(plugin);
-				}
+				log.severe("Invalid plugin at: " + f.getAbsolutePath());
+			}
+			catch (InvalidDescriptionException e)
+			{
+				log.severe("Invalid plugin at: " + f.getAbsolutePath());
 			}
 		}
 		log.info("Finished loading plugins");
