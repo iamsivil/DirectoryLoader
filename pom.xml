@@ -16,6 +16,14 @@
         </configuration>
       </plugin>
     </plugins>
+    <resources>
+        <resource>
+        <directory>src</directory>
+            <includes>
+                <include>*.yml</include>
+            </includes>
+        </resource>
+    </resources>
   </build>
   <scm>
   	<url>https://github.com/IGP/DirectoryLoader</url>
@@ -26,7 +34,7 @@
   	<dependency>
   		<groupId>org.bukkit</groupId>
   		<artifactId>bukkit</artifactId>
-  		<version>1.2.4-R0.1-SNAPSHOT</version>
+  		<version>1.2.4-R1.1-SNAPSHOT</version>
   	</dependency>
   </dependencies>
 </project>
