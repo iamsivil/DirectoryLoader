@@ -11,9 +11,10 @@ import org.yaml.snakeyaml.error.YAMLException;
 import java.io.*;
 import java.util.regex.Pattern;
 
+@SuppressWarnings("UnusedDeclaration")
 public class DLPluginLoader extends JavaPluginLoader
 {
-	@SuppressWarnings("unused")
+	@SuppressWarnings("FieldCanBeLocal")
 	private final Server server;
 	protected final Pattern[] fileFilters =
 	{
